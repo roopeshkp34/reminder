@@ -74,7 +74,7 @@ def not_available(request, token):
 			if today_entries.count() >= Person.objects.filter(is_active=True).count() - 1:
 				return JsonResponse({"success": False, "message": "Sorry! You can't skip today."})
 
-			last_done = LastDone.objects.get(person_id=token_obj.person_id)
+			last_done = LastDone.objects.filter(person_id=token_obj.person_id).latest("created_at")
 			all_persons = Person.objects.order_by("first_name")
 			next_person =all_persons.filter(first_name__gt=last_done.person_id.first_name).first()
 			if not next_person:
