@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder Email</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .message {
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="message">
+            <p>Hi <strong>{{name}}</strong>,</p>
+            <p>We wanted to inform you that <strong>{{pervious_person}}</strong> is not available today. Therefore, the task of cleaning the waste has been reassigned to you.</p>
+            <p>Please make sure to complete this task promptly.</p>
+            <p>If you are not in the room, please click the button below:</p>
+        </div>
+        <a class="button" href={{server}}>Click Here</a>
+    </div>
+</body>
+</html>

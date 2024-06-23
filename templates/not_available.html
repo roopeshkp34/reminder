@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="styles.css" />
+      -->
+    <style>
+        .main {
+            background-color: aqua;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sub {
+            /* background-color: rgb(16, 80, 59);  */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        textarea {
+            height: 30vh;
+            width: 30vw;
+            margin-top: 10px;
+        }
+
+        button {
+            width: 10vw;
+            height: 10hw;
+            margin: 10px;
+            background-color: rgb(97, 208, 12);
+            border-radius: 30px;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        button:hover {
+            background-color: aqua;
+            cursor: default;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="sub">
+            <span style="
+            font-size: 20px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+              'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+          ">Reason</span><textarea id="reason"></textarea>
+            <button id="submit">enter</button>
+        </div>
+    </div>
+</body>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        const csrftoken = getCookie('csrftoken');
+        $(document).on("click", "#submit", function() {
+            var url = window.location.href;
+            var parts = url.split('/');
+            var token = parts[parts.length - 1];
+            
+            event.preventDefault();
+            var formData = new FormData();
+            formData.append("reason", $("#reason").val())
+            $.ajax({
+                url: `/not-available/${token}`,
+                method: "post",
+                contentType: false,
+                processData: false,
+                data: formData,
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                },
+                success: function(response){
+                    if(response.success){
+                        alert("Kainju Pokko")
+                    }
+                    else{
+                       alert(response.message)
+                    }
+                }
+            })
+        });
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+            }
+        }
+        }
+        return cookieValue;
+    }
+  
+</script>
+
+</html>

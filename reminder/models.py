@@ -22,6 +22,7 @@ class LastDone(models.Model):
 class Token(models.Model):
     token = models.CharField(max_length=150, blank=False)
     is_read = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     person_id = models.ForeignKey(Person, on_delete=models.CASCADE)
 
     created_at = models.DateTimeField(auto_now_add=True)

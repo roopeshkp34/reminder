@@ -10,27 +10,44 @@ def generate_random_token(length=32):
     token = ''.join(secrets.choice(alphabet) for _ in range(length))
     return token
 
+def generate_message_for_initial(to_email, name, token):
+    try:
+        html_content = render_to_string('email/mail.html', {"name": name, "server": f"http://{settings.SERVER_DOMAIN}/not-available/{token}"})
 
-def send_mail(to_email, name, token):
-    from_email = settings.EMAIL
-    from_password = settings.EMAIL_PASSWORD
+        msg = EmailMessage()
+        msg.set_content(f"Hi {name}, your the one to clean the kitchen waste today please do it today.")
+        msg.add_alternative(html_content, subtype='html')
+        msg['From'] = settings.EMAIL
+        msg['To'] = to_email
+        msg['Subject'] = "Daily Reminder"
 
-    html_content = render_to_string('email/mail.html', {"name": name, "server": f"http://{settings.SERVER_DOMAIN}/not-available/{token}"})
+        send_mail(msg)
+    except: raise Exception
 
-    msg = EmailMessage()
-    msg.set_content(f"Hi {name}, your the one to clean the kitchen waste today please do it today.")
-    msg.add_alternative(html_content, subtype='html')
-    msg['From'] = from_email
-    msg['To'] = to_email
-    msg['Subject'] = "Daily Reminder"
+def generate_message_for_re_assign(to_email, name, token, pervious_person):
+    try:
+        html_content = render_to_string('email/reassign-mail.html', {"name": name, "server": f"http://{settings.SERVER_DOMAIN}/not-available/{token}", "pervious_person": pervious_person})
 
+        msg = EmailMessage()
+        msg.set_content(f"Hi {name}, your the one to clean the kitchen waste today please do it today.")
+        msg.add_alternative(html_content, subtype='html')
+        msg['From'] = settings.EMAIL
+        msg['To'] = to_email
+        msg['Subject'] = "Daily Reminder"
+
+        send_mail(msg)
+    except: raise Exception
+
+
+def send_mail(message: EmailMessage):
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
-        server.login(from_email, from_password)
-        server.send_message(msg)
+        server.login(settings.EMAIL, settings.EMAIL_PASSWORD)
+        server.send_message(message)
         server.quit()
-        print(f"Email sent to {to_email}")
+        print(f"""Email sent to {message["To"]}""")
     except Exception as e:
-        print(f"Failed to send email to {to_email}. Error: {e}")
+        print(f"""Failed to send email to {message["To"]}. Error: {e}""")
+        raise Exception
 
