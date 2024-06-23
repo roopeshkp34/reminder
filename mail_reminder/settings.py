@@ -28,9 +28,9 @@ environ.Env.read_env(env_file=f"{BASE_DIR}/.env")
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["reminder-2f17.onrender.com"]
 
 
 # Application definition
