@@ -30,7 +30,7 @@ def send_notification(request):
 				next_person = all_persons.filter().first()
 				if last_done:
 					next_person = all_persons.filter(first_name__gt=last_done.person_id.first_name).first()
-				print(f"\n {next_person=}")
+
 				token = generate_random_token()
 				Token.objects.create(token=token, person_id=next_person)
 				generate_message_for_initial(to_email=next_person.email, name=next_person.first_name, token=token)
@@ -73,7 +73,7 @@ def not_available(request, token):
 			today_entries = LastDone.objects.filter(created_at__year=today.year, created_at__month=today.month, created_at__day=today.day).all()
 
 
-			if today_entries.count() >= Person.objects.filter(is_active=True).count() - 1:
+			if today_entries.count() >= Person.objects.filter(is_active=True).count():
 				return JsonResponse({"success": False, "message": "Sorry! You can't skip today."})
 
 			last_done = LastDone.objects.filter(person_id=token_obj.person_id).latest("created_at")
