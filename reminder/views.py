@@ -27,12 +27,10 @@ def send_notification(request):
 					last_done = None
 
 				all_persons = Person.objects.order_by("first_name")
+				next_person = all_persons.filter().first()
 				if last_done:
 					next_person = all_persons.filter(first_name__gt=last_done.person_id.first_name).first()
-					if not next_person:
-						next_person = all_persons.filter().first()
-				else:
-					next_person = all_persons.filter().first()
+				print(f"\n {next_person=}")
 				token = generate_random_token()
 				Token.objects.create(token=token, person_id=next_person)
 				generate_message_for_initial(to_email=next_person.email, name=next_person.first_name, token=token)
