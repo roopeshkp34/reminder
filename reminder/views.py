@@ -17,31 +17,35 @@ def send_notification(request):
 	# if request.user.is_authenticated:
 		if request.method == "POST":
 			try:
-				last_done = LastDone.objects.filter(is_active=True).latest("created_at")
-				today = timezone.now().date()
-				if last_done.created_at.date() == today:
-					return JsonResponse({"success": False, "message": "Already sent the mail"})
-				
-			except LastDone.DoesNotExist:
-				last_done = None
+				try:
+					last_done = LastDone.objects.filter(is_active=True).latest("created_at")
+					today = timezone.now().date()
+					if last_done.created_at.date() == today:
+						return JsonResponse({"success": False, "message": "Already sent the mail"})
+					
+				except LastDone.DoesNotExist:
+					last_done = None
 
-			all_persons = Person.objects.order_by("first_name")
-			if last_done:
-				next_person = all_persons.filter(first_name__gt=last_done.person_id.first_name).first()
-				if not next_person:
+				all_persons = Person.objects.order_by("first_name")
+				if last_done:
+					next_person = all_persons.filter(first_name__gt=last_done.person_id.first_name).first()
+					if not next_person:
+						next_person = all_persons.filter().first()
+				else:
 					next_person = all_persons.filter().first()
-			else:
-				next_person = all_persons.filter().first()
-			token = generate_random_token()
-			Token.objects.create(token=token, person_id=next_person)
-			generate_message_for_initial(to_email=next_person.email, name=next_person.first_name, token=token)
-			
-			new_obj = LastDone()
-			new_obj.person_id = next_person
-			new_obj.save()
+				token = generate_random_token()
+				Token.objects.create(token=token, person_id=next_person)
+				generate_message_for_initial(to_email=next_person.email, name=next_person.first_name, token=token)
+				
+				new_obj = LastDone()
+				new_obj.person_id = next_person
+				new_obj.save()
 
 
-			return JsonResponse({"success": True})
+				return JsonResponse({"success": True})
+			except Exception as e:
+				print(f'Exception: {str(e)}')
+				return JsonResponse({"success": False, "message": str(e)})
 		else:
 			return JsonResponse({"success": False, "message": "Method not allowed"})
 	# else:
