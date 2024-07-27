@@ -1,5 +1,5 @@
 .env
-*.sqlite3
+db1.sqlite3
 *.so
 *.pyc
 *.vscode
